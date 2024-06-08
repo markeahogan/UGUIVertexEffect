@@ -149,7 +149,7 @@ namespace PopupAsylum.UIEffects
         private void UpdateCanvasMesh()
         {
             TMP_Text text = _graphic as TMP_Text;
-            bool hasCharacters = text.textInfo.characterCount > 0;
+            bool hasCharacters = text && text.textInfo != null && text.textInfo.characterCount > 0;
             _text._canvasRenderer?.SetMesh(
             _text._modified && hasCharacters ? 
             _text._mesh : hasCharacters ? text.mesh : null);
