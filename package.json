@@ -1,0 +1,16 @@
+{
+  "name": "com.popupasylum.uguivertexeffect",
+  "displayName": "UGUI Vertex Effect",
+  "version": "1.0.2",
+  "unity": "2019.3",
+  "description": "",
+  "keywords": [
+  ],
+  "samples": [
+    {
+      "displayName": "Samples",
+	  "description": "Contains samples of UGUI Vertex ffects",
+	  "path": "Samples~"
+	}
+  ]
+}
