@@ -9,7 +9,7 @@
   "samples": [
     {
       "displayName": "Samples",
-	  "description": "Contains samples of UGUI Vertex ffects",
+	  "description": "Contains samples of UGUI Vertex Effects",
 	  "path": "Samples~"
 	}
   ]
