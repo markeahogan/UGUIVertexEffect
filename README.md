@@ -10,26 +10,12 @@ Though a good chunk of time has been devoted to performance, there are some limi
 ## Effects
 
 <b>Bend</b> - Curves UI around a cylinder<br>
-
-https://github.com/markeahogan/uguivertexeffect-dev/assets/6376138/5413d397-e2c8-450e-98a8-5f87867e7fb9
-
 <b>Feathered Edge</b> - Similar to RectMask2D but supporting rotation<br>
-
-https://github.com/markeahogan/uguivertexeffect-dev/assets/6376138/513439dd-3957-489a-8d46-cad04fb7da1a
-
 <b>Bezier Patch</b> - Similar to Photoshop's Warp<br>
-
-https://github.com/markeahogan/uguivertexeffect-dev/assets/6376138/fb007000-2f36-4c1a-a7e9-7e7a0f993227
-
-
 <b>Gradient</b> - A gradient across the graphic (great in conjuntion with [GradientColorSpace](https://github.com/markeahogan/GradientColorSpace))<br>
-
-https://github.com/markeahogan/uguivertexeffect-dev/assets/6376138/b0be334f-9d4e-4f27-9750-0c31cfc2c942
-
-
 <b>Nine Slice</b> - Turns anything into a nine sliced sprite, useful for SVGs<br>
 
-https://github.com/markeahogan/uguivertexeffect-dev/assets/6376138/85d23e4d-56f8-4017-b4b2-8628476216d6
+https://github.com/markeahogan/UGUIVertexEffect/assets/6376138/f41b924d-051b-450b-8b7e-3e65324d0201
 
 
 
