@@ -298,7 +298,12 @@ namespace PopupAsylum.UIEffects
             // however in UGUI source Graphic.Raycast uses ListPool<Component>.Get() and Release() before and after filtering
             // ListPool<> has callbacks on Get and Release, we can hook into those
             // see https://github.com/Unity-Technologies/uGUI/blob/2019.1/UnityEngine.UI/UI/Core/Graphic.cs#L765
-
+#if UNITY_2021_3_OR_NEWER
+            var listPoolType = typeof(UnityEngine.Pool.ListPool<Component>);
+            var s_PoolField = listPoolType.BaseType.GetField("s_Pool", BindingFlags.NonPublic | BindingFlags.Static);
+            var pool = new UnityEngine.Pool.ObjectPool<List<Component>>(() => new List<Component>(), OnGet, l => { l.Clear(); OnRelease(l); });
+            s_PoolField.SetValue(null, pool);
+#else
             var listPoolType = Array.Find(typeof(Graphic).Assembly.GetTypes(), x => x.Name.Contains("ListPool")).MakeGenericType(typeof(Component));
             var s_ListPool = listPoolType.GetField("s_ListPool", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
             var objectPoolType = s_ListPool.GetType();
@@ -314,6 +319,7 @@ namespace PopupAsylum.UIEffects
                 value += action;
                 field.SetValue(s_ListPool, value);
             }
+#endif
         }
 
         /// <summary>
