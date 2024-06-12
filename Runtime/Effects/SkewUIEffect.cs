@@ -7,8 +7,29 @@ namespace PopupAsylum.UIEffects
     public class SkewUIEffect : UIEffect
     {
         [SerializeField]
-        public float _skewY;
-        public float _skewX;
+        private float _skewY;
+        [SerializeField]
+        private float _skewX;
+
+        public float SkewY
+        {
+            get => _skewY;
+            set
+            {
+                _skewY = value;
+                MarkAsDirty();
+            }
+        }
+
+        public float SkewX
+        {
+            get => _skewX;
+            set
+            {
+                _skewX = value;
+                MarkAsDirty();
+            }
+        }
 
         public override Space UIVertexSpace => Space.Local;
         public override bool AffectsPosition => true;
