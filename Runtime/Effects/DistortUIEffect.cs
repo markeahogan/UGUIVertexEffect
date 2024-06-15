@@ -39,6 +39,14 @@ namespace PopupAsylum.UIEffects
             }
         }
 
+        /// <summary>
+        /// Called when an Animation/Animator modifies this component
+        /// </summary>
+        private void OnDidApplyAnimationProperties()
+        {
+            SetDirty();
+        }
+
         private void Reset()
         {
             _distortionPatch = DistortionPatch.Identity;
