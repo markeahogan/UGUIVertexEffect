@@ -7,8 +7,6 @@ namespace Oculus.Interaction.ComprehensiveSample
 {
     public class DesaturateUIEffect : UIEffect
     {
-        Dictionary<RectTransform, bool> _isUIEffectShader = new Dictionary<RectTransform, bool>();
-
         [SerializeField, Range(0, 1)]
         float _desautration = 1;
 
@@ -31,8 +29,7 @@ namespace Oculus.Interaction.ComprehensiveSample
 
         private bool IsUIEffectShader(RectTransform graphicTransform)
         {
-            if (_isUIEffectShader.TryGetValue(graphicTransform, out var isUIEffectShader)) return isUIEffectShader;
-            return _isUIEffectShader[graphicTransform] = graphicTransform.GetComponent<Graphic>()?.material?.shader == _uiEfffectShader;
+            return graphicTransform.GetComponent<Graphic>()?.material?.shader == _uiEfffectShader;
         }
 
         private Color32 Desaturate(Color32 color)
