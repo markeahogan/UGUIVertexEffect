@@ -12,6 +12,16 @@ namespace PopupAsylum.UIEffects
         [SerializeField, HideInInspector]
         private Shader _uiEfffectShader;
 
+        public float Desautration
+        {
+            get => _desautration; 
+            set
+            {
+                _desautration = value;
+                MarkAsDirty();
+            }
+        }
+
         public override void ModifyVertex(RectTransform graphicTransform, ref UIVertex vertex)
         {
             if (_desautration == 0) return;
