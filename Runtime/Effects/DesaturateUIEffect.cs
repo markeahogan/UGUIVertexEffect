@@ -7,28 +7,28 @@ namespace PopupAsylum.UIEffects
     public class DesaturateUIEffect : UIEffect
     {
         [SerializeField, Range(0, 1)]
-        float _desautration = 1;
+        float _desaturation = 1;
 
         [SerializeField, HideInInspector]
         private Shader _uiEfffectShader;
 
         public float Desautration
         {
-            get => _desautration; 
+            get => _desaturation; 
             set
             {
-                _desautration = value;
+                _desaturation = value;
                 MarkAsDirty();
             }
         }
 
         public override void ModifyVertex(RectTransform graphicTransform, ref UIVertex vertex)
         {
-            if (_desautration == 0) return;
+            if (_desaturation == 0) return;
 
             if (IsUIEffectShader(graphicTransform))
             {
-                vertex.uv1.x = _desautration;
+                vertex.uv1.x = _desaturation;
             }
             else
             {
@@ -44,19 +44,19 @@ namespace PopupAsylum.UIEffects
         private Color32 Desaturate(Color32 color)
         {
             byte lunimance = (byte)(color.r * 0.299f + color.g * 0.587f + color.b * 0.114f);
-            return Color32.Lerp(color, new Color32(lunimance, lunimance, lunimance, color.a), _desautration);
+            return Color32.Lerp(color, new Color32(lunimance, lunimance, lunimance, color.a), _desaturation);
         }
 
         protected override void ModifyVertices(RectTransform graphicTransform, List<UIVertex> verts)
         {
-            if (_desautration == 0) return;
+            if (_desaturation == 0) return;
 
             if (IsUIEffectShader(graphicTransform))
             {
                 for (int i = 0; i < verts.Count; i++)
                 {
                     var vert = verts[i];
-                    vert.uv1.x = _desautration;
+                    vert.uv1.x = _desaturation;
                     verts[i] = vert;
                 }
             }
