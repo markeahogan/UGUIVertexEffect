@@ -1,9 +1,8 @@
-using PopupAsylum.UIEffects;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Oculus.Interaction.ComprehensiveSample
+namespace PopupAsylum.UIEffects
 {
     public class DesaturateUIEffect : UIEffect
     {
