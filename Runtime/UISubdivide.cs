@@ -16,11 +16,21 @@ namespace PopupAsylum.UIEffects
         private float _verticalDivisions = 10;
         [SerializeField]
         private UIDivider.Flags _dividerHints;
+        [SerializeField]
+        private bool _cacheResults = true;
 
         private bool _cached;
         private UIDivider _divider = new UIDivider();
         private List<int> _indices = new List<int>();
         private List<UIVertex> _verts = new List<UIVertex>();
+
+#if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            _cached = false;
+            base.OnValidate();
+        }
+#endif
 
         public override void ModifyMesh(VertexHelper vh)
         {
@@ -75,7 +85,7 @@ namespace PopupAsylum.UIEffects
                 _divider.Finish(_verts, _indices);
             }
 
-            _cached = true;
+            _cached = _cacheResults;
         }
 
         protected override void OnDisable()

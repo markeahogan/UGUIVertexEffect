@@ -91,7 +91,7 @@ namespace PopupAsylum.UIEffects
 
             // find the bilinear coords for the hit
             var hitPoint = ray.GetPoint(enter);
-            Debug.DrawLine(cameraTransform.position, hitPoint, Color.blue);
+            //Debug.DrawLine(cameraTransform.position, hitPoint, Color.blue);
 
             var p = GetInverseTransformedByXY(hitPoint, pose);
             var a = GetInverseTransformedByXY(_corners[1], pose);
@@ -99,15 +99,16 @@ namespace PopupAsylum.UIEffects
             var c = GetInverseTransformedByXY(_corners[3], pose);
             var d = GetInverseTransformedByXY(_corners[0], pose);
             var normalized = InverseBilinear(p, a, b, c, d);
-            if (float.IsNaN(normalized.x) || float.IsNaN(normalized.y)) return false;
+            if (float.IsNaN(normalized.x) || float.IsNaN(normalized.y)) { Profiler.EndSample(); return false; }
             if (normalized.x < 0 || normalized.x > 1 || normalized.y < 0 || normalized.y > 1) { Profiler.EndSample(); return false; } // TODO account for _padding
 
             // convert the bilinear coords into the worldspace coords on the original rect
             RectTransform rect = transform as RectTransform;
             rect.GetWorldCorners(_corners);
-            var ab = Vector3.Lerp(_corners[1], _corners[2], normalized.x);
-            var dc = Vector3.Lerp(_corners[0], _corners[3], normalized.x);
-            var x = Vector3.Lerp(ab, dc, normalized.y);
+            var ab = Vector3.LerpUnclamped(_corners[1], _corners[2], normalized.x);
+            var dc = Vector3.LerpUnclamped(_corners[0], _corners[3], normalized.x);
+            var x = Vector3.LerpUnclamped(ab, dc, normalized.y);
+            //var x = Bilerp(_corners, normalized);
 
             // Position the camera so its ray hits where it hit on the modified rect, but on the original rect,
             // so that the camera is in the right place for subsequent ICanvasRaycastFilters e.g. RectMast2D
@@ -125,6 +126,15 @@ namespace PopupAsylum.UIEffects
 
             Profiler.EndSample();
             return true;
+        }
+
+        static Vector3 Bilerp(Vector3[] corners, Vector2 t)
+        {
+            var inverseT = Vector2.one - t;
+            return corners[1] * inverseT.x * inverseT.y +
+                corners[2] * t.x * inverseT.y +
+                corners[0] * inverseT.x * t.y +
+                corners[3] * t.x * t.y;
         }
 
         /// <summary>

@@ -87,7 +87,6 @@ namespace PopupAsylum.UIEffects
             if (transform.hasChanged && MarkAsDirtyIfTransformChanges)
             {
                 MarkAsDirty();
-                transform.hasChanged = false;
             }
         }
 
@@ -267,6 +266,7 @@ namespace PopupAsylum.UIEffects
             _effects.Remove(effect);
             if (add) _effects.Add(effect);
 
+            // todo: skip loop if adding
             _effectsAreGraphicSpace = _effects.TrueForAll(x => x.UIVertexSpace == UIEffect.Space.Graphic);
             _effectsModifyPosition = !_effects.TrueForAll(x => !x.AffectsPosition);
 
