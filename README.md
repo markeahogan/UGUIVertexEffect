@@ -14,6 +14,7 @@ Though a good chunk of time has been devoted to performance, there are some limi
 <b>Bezier Patch</b> - Similar to Photoshop's Warp<br>
 <b>Gradient</b> - A gradient across the graphic (great in conjuntion with [GradientColorSpace](https://github.com/markeahogan/GradientColorSpace))<br>
 <b>Nine Slice</b> - Turns anything into a nine sliced sprite, useful for SVGs<br>
+<b>Desaturation</b> - If the graphic uses a material with the UGUIVertexEffect.shader, it desaturates inthe shader, otherwise desaturates the vertex colors. For Images assign a material with the UGUIVertexEffect.shader<br>
 
 https://github.com/markeahogan/UGUIVertexEffect/assets/6376138/f41b924d-051b-450b-8b7e-3e65324d0201
 
