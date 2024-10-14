@@ -122,7 +122,7 @@ Shader "UGUIVertexEffect"
                 clip (color.a - 0.001);
                 #endif
 
-                fixed lum = Luminance(color.rgb);
+                fixed lum = dot(color.rgb, half3(0.22, 0.707, 0.071));
                 color.rgb = lerp(color.rgb, lum.xxx, IN.effects);
 
                 color.rgb *= color.a;

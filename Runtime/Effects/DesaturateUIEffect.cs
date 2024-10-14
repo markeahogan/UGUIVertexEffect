@@ -9,17 +9,22 @@ namespace PopupAsylum.UIEffects
         [SerializeField, Range(0, 1)]
         float _desaturation = 1;
 
-        [SerializeField, HideInInspector]
+        [SerializeField]
         private Shader _uiEfffectShader;
 
         public float Desautration
         {
-            get => _desaturation; 
+            get => _desaturation;
             set
             {
                 _desaturation = value;
                 MarkAsDirty();
             }
+        }
+
+        private void Reset()
+        {
+            _uiEfffectShader = Shader.Find("UGUIVertexEffect");
         }
 
         public override void ModifyVertex(RectTransform graphicTransform, ref UIVertex vertex)
@@ -43,7 +48,7 @@ namespace PopupAsylum.UIEffects
 
         private Color32 Desaturate(Color32 color)
         {
-            byte lunimance = (byte)(color.r * 0.299f + color.g * 0.587f + color.b * 0.114f);
+            byte lunimance = (byte)(color.r * 0.22f + color.g * 0.707f + color.b * 0.071f);
             return Color32.Lerp(color, new Color32(lunimance, lunimance, lunimance, color.a), _desaturation);
         }
 
