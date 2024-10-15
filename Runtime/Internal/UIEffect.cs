@@ -35,6 +35,10 @@ namespace PopupAsylum.UIEffects
         /// </summary>
         public virtual bool AffectsVertex => true;
 
+        public virtual bool UsesShader => false;
+
+        protected bool IsUGUIVertexEffectShader { get; private set; }
+
         protected virtual void OnEnable()
         {
             rectTransform = transform as RectTransform;
@@ -176,6 +180,7 @@ namespace PopupAsylum.UIEffects
 
             _graphicToLocal = rectTransform.worldToLocalMatrix * meshEffector.transform.localToWorldMatrix;
             _localToGraphic = _graphicToLocal.inverse;
+            IsUGUIVertexEffectShader = meshEffector.UsesUGUIEffectShader();
 
             return true;
         }

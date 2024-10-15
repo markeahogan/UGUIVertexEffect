@@ -63,8 +63,7 @@ Shader "UGUIVertexEffect"
             {
                 float4 vertex   : POSITION;
                 float4 color    : COLOR;
-                float2 texcoord : TEXCOORD0;
-                float effects : TEXCOORD1;
+                float3 texcoord : TEXCOORD0;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -105,7 +104,7 @@ Shader "UGUIVertexEffect"
                 OUT.mask = half4(v.vertex.xy * 2 - clampedRect.xy - clampedRect.zw, 0.25 / (0.25 * half2(_UIMaskSoftnessX, _UIMaskSoftnessY) + abs(pixelSize.xy)));
 
                 OUT.color = v.color * _Color;
-                OUT.effects = v.effects;
+                OUT.effects = v.texcoord.z;
                 return OUT;
             }
 

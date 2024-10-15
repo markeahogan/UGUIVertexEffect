@@ -9,7 +9,7 @@ namespace PopupAsylum.UIEffects
     /// Modifies the verts of the attached graphic
     /// </summary>
     [ExecuteInEditMode]
-    public sealed partial class UIMeshModifier : BaseMeshEffect
+    public sealed partial class UIMeshModifier : BaseMeshEffect, IMaterialModifier
     {
         public static readonly Dictionary<Type, UIDivider.Flags> DividerFlags = new Dictionary<Type, UIDivider.Flags>()
     {
@@ -26,6 +26,10 @@ namespace PopupAsylum.UIEffects
         private static Vector3[] _localCorners = new Vector3[4];
         private static List<Plane> _divisions = new List<Plane>();
         private static UIDivider _divider = new UIDivider();
+        private static Material _effectMaterial;
+
+        [HideInInspector, SerializeField]
+        private Shader _effectShader;
 
         [HideInInspector, NonSerialized]
         public UIMeshModifier ParentRef;
@@ -35,17 +39,28 @@ namespace PopupAsylum.UIEffects
         private List<IEffectFilter> _filters = new List<IEffectFilter>();
 
         private int _childCount = 0;
+
         private bool _effectsAreGraphicSpace = true;
         private bool _effectsModifyPosition = false;
+        private bool _effectsUseShader = false;
+
         private bool _isGraphic = false;
         private UIDivider.Flags? _hintFlags = null;
         private Graphic _graphic;
 
         private bool EffectsModifyPosition => _effectsModifyPosition || (ParentRef != null && ParentRef.EffectsModifyPosition);
         private bool MarkAsDirtyIfTransformChanges => !_effectsAreGraphicSpace || (ParentRef != null && ParentRef.MarkAsDirtyIfTransformChanges);
+        private bool EffectsUseShader => _effectsUseShader || (ParentRef != null && ParentRef.EffectsUseShader);
 
         protected override void OnEnable()
         {
+            if (!_effectShader) _effectShader = Shader.Find("UGUIVertexEffect");
+            if (_effectShader && !_effectMaterial)
+            {
+                _effectMaterial = new Material(_effectShader);
+                _effectMaterial.hideFlags = HideFlags.DontSave;
+            }
+
             Repair(this);
             SetupChildren(Children.All);
             SetTextCallbacksRegistered(true);
@@ -78,7 +93,7 @@ namespace PopupAsylum.UIEffects
 
         protected override void OnDisable()
         {
-            UpdateParent();
+            ClearParent();
             SetTextCallbacksRegistered(false);
         }
 
@@ -90,16 +105,23 @@ namespace PopupAsylum.UIEffects
             }
         }
 
+
+        private void ClearParent()
+        {
+            if (ParentRef != null)
+            {
+                ParentRef.IncludeChild(this, false);
+                ParentRef = null;
+            }
+        }
+
         private void UpdateParent()
         {
             var newParent = isActiveAndEnabled && transform.parent ? transform.parent.GetComponent<UIMeshModifier>() : null;
 
             if (newParent == ParentRef) return;
 
-            if (ParentRef != null)
-            {
-                ParentRef.IncludeChild(this, false);
-            }
+            ClearParent();
 
             ParentRef = newParent;
 
@@ -257,6 +279,7 @@ namespace PopupAsylum.UIEffects
                 if (_graphic.canvas && !SetTextDirty())
                 {
                     _graphic.SetVerticesDirty();
+                    if (EffectsUseShader) _graphic.SetMaterialDirty();
                 }
             }
         }
@@ -266,9 +289,9 @@ namespace PopupAsylum.UIEffects
             _effects.Remove(effect);
             if (add) _effects.Add(effect);
 
-            // todo: skip loop if adding
             _effectsAreGraphicSpace = _effects.TrueForAll(x => x.UIVertexSpace == UIEffect.Space.Graphic);
             _effectsModifyPosition = !_effects.TrueForAll(x => !x.AffectsPosition);
+            _effectsUseShader = !_effects.TrueForAll(x => !x.UsesShader);
 
             MarkAsDirty();
         }
@@ -323,6 +346,22 @@ namespace PopupAsylum.UIEffects
                 SetGraphicDirty();
             }
             _children.ForEach(child => child.MarkAsDirty());
+        }
+
+        public Material GetModifiedMaterial(Material baseMaterial)
+        {
+            return UsesUGUIEffectShader() ? _effectMaterial : baseMaterial;
+        }
+
+        public bool UsesUGUIEffectShader()
+        {
+            if (!_isGraphic) return false;
+            if (!EffectsUseShader) return false;
+#if TMPRO_INCLUDED 
+            if (_graphic is TMPro.TextMeshProUGUI) return false;
+#endif
+            if (_graphic.material != graphic.defaultMaterial) return false;
+            return true;
         }
 
         enum Children

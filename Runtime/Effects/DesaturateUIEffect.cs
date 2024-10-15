@@ -9,8 +9,7 @@ namespace PopupAsylum.UIEffects
         [SerializeField, Range(0, 1)]
         float _desaturation = 1;
 
-        [SerializeField]
-        private Shader _uiEfffectShader;
+        public override bool UsesShader => true;
 
         public float Desautration
         {
@@ -22,28 +21,18 @@ namespace PopupAsylum.UIEffects
             }
         }
 
-        private void Reset()
-        {
-            _uiEfffectShader = Shader.Find("UGUIVertexEffect");
-        }
-
         public override void ModifyVertex(RectTransform graphicTransform, ref UIVertex vertex)
         {
             if (_desaturation == 0) return;
 
-            if (IsUIEffectShader(graphicTransform))
+            if (IsUGUIVertexEffectShader)
             {
-                vertex.uv1.x = _desaturation;
+                vertex.uv0.z = _desaturation;
             }
             else
             {
                 vertex.color = Desaturate(vertex.color);
             }
-        }
-
-        private bool IsUIEffectShader(RectTransform graphicTransform)
-        {
-            return graphicTransform.GetComponent<Graphic>()?.material?.shader == _uiEfffectShader;
         }
 
         private Color32 Desaturate(Color32 color)
@@ -56,12 +45,12 @@ namespace PopupAsylum.UIEffects
         {
             if (_desaturation == 0) return;
 
-            if (IsUIEffectShader(graphicTransform))
+            if (IsUGUIVertexEffectShader)
             {
                 for (int i = 0; i < verts.Count; i++)
                 {
                     var vert = verts[i];
-                    vert.uv1.x = _desaturation;
+                    vert.uv0.z = _desaturation;
                     verts[i] = vert;
                 }
             }
