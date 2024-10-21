@@ -26,7 +26,7 @@ namespace PopupAsylum.UIEffects
         private static Vector3[] _localCorners = new Vector3[4];
         private static List<Plane> _divisions = new List<Plane>();
         private static UIDivider _divider = new UIDivider();
-        private static Material _effectMaterial;
+        private static Material _defaultEffectMaterial;
 
         [HideInInspector, SerializeField]
         private Shader _effectShader;
@@ -55,10 +55,10 @@ namespace PopupAsylum.UIEffects
         protected override void OnEnable()
         {
             if (!_effectShader) _effectShader = Shader.Find("UGUIVertexEffect");
-            if (_effectShader && !_effectMaterial)
+            if (_effectShader && !_defaultEffectMaterial)
             {
-                _effectMaterial = new Material(_effectShader);
-                _effectMaterial.hideFlags = HideFlags.DontSave;
+                _defaultEffectMaterial = new Material(_effectShader);
+                _defaultEffectMaterial.hideFlags = HideFlags.DontSave;
             }
 
             Repair(this);
@@ -348,19 +348,35 @@ namespace PopupAsylum.UIEffects
             _children.ForEach(child => child.MarkAsDirty());
         }
 
-        public Material GetModifiedMaterial(Material baseMaterial)
+        public Material GetModifiedMaterial(Material material)
         {
-            return UsesUGUIEffectShader() ? _effectMaterial : baseMaterial;
+            Material defaultMaterial = _graphic.defaultMaterial;
+
+            if (!UsesUGUIEffectShader())
+            {
+                if (material.shader == _effectShader) material.shader = defaultMaterial.shader;
+                return material;
+            }
+
+            // graphic is not using any material customization, 
+            if (material == defaultMaterial) return _defaultEffectMaterial;
+
+            // graphic is using a custom material, but its the default shader
+            // its probably Masked, replace the shader with the effect shader
+            if (material.shader == defaultMaterial.shader) material.shader = _effectShader;
+
+            return material;
         }
 
         public bool UsesUGUIEffectShader()
         {
             if (!_isGraphic) return false;
+            if (!isActiveAndEnabled) return false;
             if (!EffectsUseShader) return false;
 #if TMPRO_INCLUDED 
             if (_graphic is TMPro.TextMeshProUGUI) return false;
 #endif
-            if (_graphic.material != graphic.defaultMaterial) return false;
+            if (_graphic.material != _graphic.defaultMaterial) return false;
             return true;
         }
 
