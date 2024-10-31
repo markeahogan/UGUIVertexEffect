@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -63,8 +64,21 @@ namespace PopupAsylum.UIEffects
 
         private abstract class RaycasterCallback : BaseRaycaster
         {
+            protected static List<BaseRaycaster> Raycasters;
+
             public Action<PointerEventData, List<RaycastResult>> invoke;
             public override Camera eventCamera => null;
+
+            protected override void Awake()
+            {
+                Raycasters ??= typeof(BaseRaycaster).Assembly
+                  .GetType("UnityEngine.EventSystems.RaycasterManager")?
+                  .GetField("s_Raycasters", BindingFlags.NonPublic | BindingFlags.Static)?
+                  .GetValue(null) as List<BaseRaycaster>;
+
+                base.Awake();
+            }
+
             public override void Raycast(PointerEventData eventData, List<RaycastResult> results)
             {
                 if (autoInvoke)
@@ -88,10 +102,7 @@ namespace PopupAsylum.UIEffects
         {
             protected override void OnEnable()
             {
-                var graphicRaycasters = FindObjectsOfType<BaseRaycaster>();
-                foreach (var g in graphicRaycasters) { SetEnabled(g, false); }
-                base.OnEnable();
-                foreach (var g in graphicRaycasters) { SetEnabled(g, true); }
+                Raycasters.Insert(0, this);
             }
 
             public override void Raycast(PointerEventData eventData, List<RaycastResult> results)
@@ -116,8 +127,10 @@ namespace PopupAsylum.UIEffects
         {
             private void Update()
             {
-                OnDisable();
-                OnEnable();
+                var index = Raycasters.LastIndexOf(this);
+                var last = Raycasters.Count - 1;
+                Raycasters[index] = Raycasters[last];
+                Raycasters[last] = this;
             }
 
             public override void Raycast(PointerEventData eventData, List<RaycastResult> results)
