@@ -41,7 +41,7 @@ namespace PopupAsylum.UIEffects
         /// </summary>
         void ChangePadding()
         {
-            if (_isGraphic && EffectsModifyPosition)
+            if (_isGraphic && _graphic.raycastTarget && EffectsModifyPosition)
             {
                 _padding = _graphic.raycastPadding;
                 _graphic.raycastPadding = Vector4.one * -10000;// Vector4.negativeInfinity; //TODO calculate just enough padding to capture the visual
@@ -52,7 +52,7 @@ namespace PopupAsylum.UIEffects
 
         void RestorePadding()
         {
-            if (_isGraphic && EffectsModifyPosition) _graphic.raycastPadding = _padding;
+            if (_isGraphic && _graphic.raycastTarget && EffectsModifyPosition) _graphic.raycastPadding = _padding;
             _children.ForEach(x => x.RestorePadding());
         }
 
