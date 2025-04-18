@@ -350,6 +350,8 @@ namespace PopupAsylum.UIEffects
 
         public Material GetModifiedMaterial(Material material)
         {
+            if (!_isGraphic) return material;
+
             Material defaultMaterial = _graphic.defaultMaterial;
 
             if (!UsesUGUIEffectShader())
