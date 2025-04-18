@@ -20,13 +20,14 @@ namespace PopupAsylum.UIEffects
         private UIVertex Stagger(RectTransform graphicTransform, UIVertex vertex)
         {
             var childCount = transform.childCount;
-            offset = perChildOffset - (show * childCount * perChildOffset);
+            var pcof = Mathf.Abs(perChildOffset);
+            offset = pcof - (show * childCount * pcof);
 
             var childIndex = GetSiblingIndex(graphicTransform);
-            vertex.position += Mathf.Max(0, (offset + perChildOffset * childIndex)) * Vector3.right;
+            vertex.position += Mathf.Max(0, (offset + pcof * childIndex)) * (perChildOffset >= 0 ? Vector3.right : Vector3.left);
 
             Color color = vertex.color;
-            color.a *= 1 - (childIndex + offset / perChildOffset);
+            color.a *= 1 - (childIndex + offset / pcof);
             vertex.color = color;
 
             return vertex;
