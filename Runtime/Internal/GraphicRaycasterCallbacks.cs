@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 #if XRTK_INCLUDED
 using UnityEngine.XR.Interaction.Toolkit.UI;
@@ -46,14 +45,21 @@ namespace PopupAsylum.UIEffects
 
         public static void InvokeBefore(PointerEventData eventData, List<RaycastResult> results)
         {
-            Callbacks.ForEach(x => x.OnGraphicRaycaster(Stage.Before, eventData, results));
-            OnGraphicRaycast?.Invoke(Stage.Before, eventData, results);
+            Invoke(eventData, results, Stage.Before);
         }
 
         public static void InvokeAfter(PointerEventData eventData, List<RaycastResult> results)
         {
-            Callbacks.ForEach(x => x.OnGraphicRaycaster(Stage.After, eventData, results));
-            OnGraphicRaycast?.Invoke(Stage.After, eventData, results);
+            Invoke(eventData, results, Stage.After);
+        }
+
+        private static void Invoke(PointerEventData eventData, List<RaycastResult> results, Stage stage)
+        {
+            for (int i = 0; i < Callbacks.Count; i++)
+            {
+                Callbacks[i].OnGraphicRaycaster(stage, eventData, results);
+            }
+            OnGraphicRaycast?.Invoke(stage, eventData, results);
         }
 
         public enum Stage
