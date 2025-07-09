@@ -11,7 +11,9 @@ namespace PopupAsylum.UIEffects
 {
     public partial class UIMeshModifier
     {
+#if TMPRO_INCLUDED
         private TMP _text;
+#endif
 
         /// <summary>
         /// Makes the text update, if this graphic is text
